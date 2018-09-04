@@ -1,0 +1,64 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "tap-tap.fullname" . }}
+  labels:
+    app: {{ include "tap-tap.name" . }}
+    chart: {{ include "tap-tap.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "tap-tap.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "tap-tap.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    spec:
+      volumes:
+        - name: tap-tap-config
+          configMap:
+            name: tap-tap-config
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 1800
+              protocol: TCP
+          volumeMounts:
+            - name: tap-tap-config
+              mountPath: /usr/local/src/server/config.json
+              subPath: server-config.json
+            - name: tap-tap-config
+              mountPath: /usr/local/src/client/data/config.json
+              subPath: client-config.json
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

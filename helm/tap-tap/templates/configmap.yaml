@@ -1,0 +1,40 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: tap-tap-config
+data:
+  server-config.json: |-
+    {
+        "name": "Tap Tap Adventure",
+        "host": "0.0.0.0",
+        "port": 1800,
+
+        "offlineMode": false,
+        "devClient": true,
+        "development": false,
+        "overrideAuth": false,
+        "debug": false,
+
+        "mysqlHost": "{{ template "mysql.fullname" . }}-mysql",
+        "mysqlPort": {{ .Values.mysql.service.port }},
+        "mysqlUser": "{{ .Values.mysql.mysqlUser }}",
+        "mysqlPassword": "{{ .Values.mysql.mysqlPassword }}",
+        "mysqlDatabase": "{{ .Values.mysql.mysqlDatabase }}",
+
+        "debugLevel": "info",
+        "localDebug": false,
+        "worlds": 1,
+        "maxPlayers": 200,
+        "gver": 2,
+        "updateTime": 200,
+
+        "forceCollisions": false
+      }
+
+  client-config.json: |-
+    {
+      "ip": "{{ .Values.gameUrl }}",
+      "port": 443,
+      "ssl": true,
+      "version": 2
+    }

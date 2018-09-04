@@ -1,6 +1,7 @@
 FROM node:8
 
-ADD https://github.com/Tach-Yon/Tap-Tap-Adventure/archive/master.tar.gz /usr/local/src/source.tar.gz
+# ADD https://github.com/Tach-Yon/Tap-Tap-Adventure/archive/master.tar.gz /usr/local/src/source.tar.gz
+ADD https://github.com/jacobtomlinson/Tap-Tap-Adventure/archive/ssl-support.tar.gz /usr/local/src/source.tar.gz
 
 WORKDIR /usr/local/src/
 

@@ -1,0 +1,30 @@
+
+image:
+  pullPolicy: Always
+
+gameUrl: tap-tap.informaticslab.co.uk
+
+mysql:
+  persistence:
+    enabled: false
+
+resources:
+  limits:
+   cpu: 1000m
+   memory: 2Gi
+  requests:
+   cpu: 100m
+   memory: 128Mi
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - tap-tap.informaticslab.co.uk
+  tls:
+   - secretName: tap-tap-tls
+     hosts:
+       - tap-tap.informaticslab.co.uk
